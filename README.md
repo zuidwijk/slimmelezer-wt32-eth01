@@ -13,6 +13,22 @@ On my test meter Sagemcom T210-D (DSMR 5) and my personal meter ISKRA AM550 (DSM
 Looking at the top-part of the pin-out image, those pins are used for flashing the esp32. The TXD0, RXD0, IO0, EN, GND and 3v3. Those pins are directly connected to the ch340 serial chip.
 ### Serial pin for data
 In the middle left you see the RXD and TXD for serial communication. Only the RXD is used as DSMR is an oneway communication protocol.
+```yaml
+uart:
+  id: uart_dsmr
+  baud_rate: 115200
+  rx_pin: GPIO5
+  rx_buffer_size: 1700
+```
+
+And for the DSMR the `id: uart_dsmr` is used:
+```yaml
+dsmr:
+  uart_id: uart_dsmr
+  id: dsmr_instance
+  max_telegram_length: 1700
+```
+
 ### Ethernet pins for ESPHome
 The following settings are used in case of using ESPHome:
 ```yaml
