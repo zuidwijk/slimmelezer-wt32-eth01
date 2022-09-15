@@ -45,3 +45,7 @@ See more information about ethernet and esphome on [their website](https://espho
 ![](/images/IMG_8460.jpeg)
 ![](/images/IMG_8462.jpeg)
 ![](/images/IMG_8463.jpeg)
+## Assembled
+![](/images/IMG_8457.jpeg)
+![](/images/IMG_8458.jpeg)
+![](/images/IMG_8459.jpeg)
