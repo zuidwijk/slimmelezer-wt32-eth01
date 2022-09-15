@@ -2,6 +2,11 @@
 ![WT32-ETH01](/images/WT32-ETH01.jpg)
 ## WT32-ETH01 based
 For this version I was looking for an esp32 and ethernet. The best version I could find is the [WT32-ETH01 from wireless-tag](http://www.wireless-tag.com/portfolio/wt32-eth01/). These boards can be found on [AliExpress](https://nl.aliexpress.com/wholesale?SearchText=WT32-ETH01) for [around €15](https://nl.aliexpress.com/item/1005004432624600.html) (including shipping)
+
+I've designed this prototype for using ethernet only. Obviously the wireless network can be used too. The down side of esp32 + wifi + esphome is that it draws quite a lot of power (and with a lot I mean >250mA). Therefore it must be powered via the USB-C port to provice the necessary power.
+
+On my test meter Sagemcom T210-D (DSMR 5) and my personal meter ISKRA AM550 (DSMR 5) the P1 port provides enough power for using it with ethernet.
+
 ### Pin-out
 ![WT32-ETH01 pin-out](/images/WT32-ETH01_pinout.png)
 ### Serial pins for flashing the esp32
