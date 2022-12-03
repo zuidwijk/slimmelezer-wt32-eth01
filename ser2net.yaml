@@ -2,6 +2,7 @@ substitutions:
   device_id: dsmr_ser2net
   device_name: DSMR ser2net
   device_description: "P1 smart meter ser2net proxy"
+  tcp_port: "3000"
 
 esphome:
   name: ${device_id}
@@ -36,7 +37,7 @@ uart:
 stream_server:
   id: dsmr_stream_server 
   uart_id: uart_dsmr
-  port: 3000  
+  port: ${tcp_port}  
 
 web_server:
   port: 80
