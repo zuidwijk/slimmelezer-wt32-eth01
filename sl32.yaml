@@ -51,6 +51,7 @@ api:
           id(dsmr_instance).set_decryption_key(private_key);
 
 ota:
+  platform: esphome
 
 dashboard_import:
   package_import_url: github://zuidwijk/slimmelezer-wt32-eth01/sl32.yaml@main
