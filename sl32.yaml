@@ -1,13 +1,12 @@
 substitutions:
-  device_name: sl32
-  device_description: "DIY P1 module to read your smart meter"
+  device_name: wt32
 
 esphome:
   name: ${device_name}
-  comment: "${device_description}"
   name_add_mac_suffix: false
+  comment: WT32-ETH01
   project:
-    name: zuidwijk.slimmelezer
+    name: zuidwijk.slimmelezer-ethernet
     version: "2.0"
   on_boot:
     then:
@@ -51,9 +50,11 @@ api:
           id(dsmr_instance).set_decryption_key(private_key);
 
 ota:
+  platform: esphome
 
 dashboard_import:
-  package_import_url: github://zuidwijk/slimmelezer-wt32-eth01/sl32.yaml@main
+  package_import_url: github://zuidwijk/slimmelezer-wt32-eth01/wt32.yaml@main
+  import_full_config: true
 
 uart:
   id: uart_dsmr
