@@ -59,7 +59,9 @@ dashboard_import:
 uart:
   id: uart_dsmr
   baud_rate: 115200
-  rx_pin: GPIO5
+  rx_pin:
+    number: GPIO5
+    ignore_strapping_warning: true
   rx_buffer_size: 1700
   
 web_server:
