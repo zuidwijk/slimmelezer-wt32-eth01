@@ -30,6 +30,8 @@ esp32:
 # Enable logging
 logger:
   baud_rate: 115200
+  logs: 
+    component: ERROR
 
 # Enable Home Assistant API
 api:
