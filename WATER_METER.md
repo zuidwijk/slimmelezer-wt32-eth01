@@ -1,6 +1,4 @@
 # SlimmeLezer WT32-ETH01 + water meter
-![WT32-ETH01](/images/WT32-ETH01.jpg)
-## SlimmeMeter WT32-ETH01
 For this modification an additional 5-pin cornered header was soldered to the side of the WT32-ETH01 to allow for the connection of an inductive proximity sensor ([LJ12A3-4-Z/BX](https://www.kiwi-electronics.com/en/inductive-proximity-sensor-switch-panel-mount-3177)) using a [logic level shifter](https://www.amazon.nl/s?k=3.3V+naar+5V+shifter) to bring the 5V sensor signal down to 3.3V.
 
 ### Modifying the WT32-ETH01
