@@ -1,8 +1,6 @@
-substitutions:
-  device_name: wt32
-
 esphome:
-  name: ${device_name}
+  name: slimmelezer-eth
+  friendly_name: slimmelezer-eth
   name_add_mac_suffix: false
   comment: WT32-ETH01
   project:
@@ -25,7 +23,7 @@ esphome:
 esp32:
   board: esp32dev
   framework:
-    type: arduino
+    type: esp-idf
 
 # Enable logging
 logger:
@@ -71,7 +69,9 @@ ethernet:
   type: LAN8720
   mdc_pin: GPIO23
   mdio_pin: GPIO18
-  clk_mode: GPIO0_IN
+  clk:
+    pin: GPIO0
+    mode: CLK_EXT_IN
   phy_addr: 1
   power_pin: GPIO16
   
@@ -83,6 +83,7 @@ globals:
   - id: stored_decryption_key
     type: char[32]
     restore_value: yes
+
 
 dsmr:
   uart_id: uart_dsmr
