@@ -13,8 +13,7 @@ esphome:
             lambda: return id(has_key);
           then:
             - lambda: |-
-                std::string key(id(stored_decryption_key), 32);
-                id(dsmr_instance).set_decryption_key(key);
+                id(dsmr_instance).set_decryption_key(id(stored_decryption_key));
           else:
             - logger.log:
                 level: info
@@ -47,7 +46,7 @@ api:
       - lambda: |-
           if (private_key.length() == 32)
             private_key.copy(id(stored_decryption_key), 32);
-          id(dsmr_instance).set_decryption_key(private_key);
+          id(dsmr_instance).set_decryption_key(private_key.c_str());
 
 ota:
   - platform: esphome
