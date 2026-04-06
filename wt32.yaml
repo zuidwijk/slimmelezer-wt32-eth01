@@ -51,7 +51,15 @@ api:
 ota:
   - platform: esphome
   - platform: web_server
-    
+
+#external_components:
+#  - source: github://oxan/esphome-stream-server
+
+#stream_server:
+#  uart_id: uart_dsmr
+#  port: 23
+#  buffer_size: 2048
+
 dashboard_import:
   package_import_url: github://zuidwijk/slimmelezer-wt32-eth01/wt32.yaml@main
   import_full_config: true
