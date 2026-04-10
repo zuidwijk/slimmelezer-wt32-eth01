@@ -1,0 +1,216 @@
+substitutions:
+  device_name: "slimmelezer-wt32-eth01"
+  friendly_name: SlimmeLezer
+  water_meter_pin: GPIO17
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: false
+  #comment: WT32-ETH01
+  project:
+    name: zuidwijk.slimmelezer-ethernet
+    version: "2.0"
+  on_boot:
+    then:
+      - if:
+          condition:
+            lambda: return id(has_key);
+          then:
+            - lambda: |-
+                std::string key(id(stored_decryption_key), 32);
+                id(dsmr_instance).set_decryption_key(key);
+          else:
+            - logger.log:
+                level: info
+                format: "Not using decryption key. If you need to set a key use Home Assistant service 'ESPHome:  ${device_name}_set_dsmr_key'"
+      - pulse_meter.set_total_pulses:
+          id: water_meter
+          value: !lambda "return id(water_meter_total);"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+  baud_rate: 115200
+  logs: 
+    component: ERROR
+
+# Enable Home Assistant API
+api:
+  actions:
+    - action: set_dsmr_key
+      variables:
+        private_key: string
+      then:
+        - logger.log:
+            format: Setting private key %s. Set to empty string to disable
+            args: [private_key.c_str()]
+        - globals.set:
+            id: has_key
+            value: !lambda "return private_key.length() == 32;"
+        - lambda: |-
+            if (private_key.length() == 32)
+              private_key.copy(id(stored_decryption_key), 32);
+            id(dsmr_instance).set_decryption_key(private_key);
+    - action: set_water_meter_total
+      variables:
+        new_water_meter_total: int
+      then:
+        - logger.log:
+            format: Setting water meter total from %d to %d.
+            args: [id(water_meter_total), new_water_meter_total]
+        - pulse_meter.set_total_pulses:
+            id: water_meter
+            value: !lambda 'return new_water_meter_total;'
+
+ota:
+  platform: esphome
+
+dashboard_import:
+  package_import_url: github://zuidwijk/slimmelezer-wt32-eth01/wt32.yaml@main
+  import_full_config: true
+
+uart:
+  id: uart_dsmr
+  baud_rate: 115200
+  rx_pin:
+    number: GPIO5
+    ignore_strapping_warning: true
+  rx_buffer_size: 1700
+  
+web_server:
+  port: 80
+  version: 3
+
+ethernet:
+  type: LAN8720
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk_mode: GPIO0_IN
+  phy_addr: 1
+  power_pin: GPIO16
+  
+globals:
+  - id: has_key
+    type: bool
+    restore_value: yes
+    initial_value: "false"
+  - id: stored_decryption_key
+    type: char[32]
+    restore_value: yes
+  - id: water_meter_total
+    type: int
+    restore_value: yes
+
+dsmr:
+  gas_mbus_id: 2
+  uart_id: uart_dsmr
+  id: dsmr_instance
+  max_telegram_length: 1700
+  # For Luxembourg users set here your decryption key
+  #decryption_key: !secret decryption_key // enable this when using decryption for Luxembourg; key like '00112233445566778899AABBCCDDEEFF'
+
+sensor:
+  - platform: dsmr
+    energy_delivered_lux:
+      name: "Energy Consumed Luxembourg"
+    energy_delivered_tariff1:
+      name: "Energy Consumed Tariff 1"
+    energy_delivered_tariff2:
+      name: "Energy Consumed Tariff 2"
+    energy_returned_lux:
+      name: "Energy Produced Luxembourg"
+    energy_returned_tariff1:
+      name: "Energy Produced Tariff 1"
+    energy_returned_tariff2:
+      name: "Energy Produced Tariff 2"
+    power_delivered:
+      name: "Power Consumed"
+      accuracy_decimals: 3
+    power_returned:
+      name: "Power Produced"
+      accuracy_decimals: 3
+    electricity_failures:
+      name: "Electricity Failures"
+      icon: mdi:alert
+    electricity_long_failures:
+      name: "Long Electricity Failures"
+      icon: mdi:alert
+    voltage_l1:
+      name: "Voltage Phase 1"
+    voltage_l2:
+      name: "Voltage Phase 2"
+    voltage_l3:
+      name: "Voltage Phase 3"
+    current_l1:
+      name: "Current Phase 1"
+    current_l2:
+      name: "Current Phase 2"
+    current_l3:
+      name: "Current Phase 3"
+    power_delivered_l1:
+      name: "Power Consumed Phase 1"
+      accuracy_decimals: 3
+    power_delivered_l2:
+      name: "Power Consumed Phase 2"
+      accuracy_decimals: 3
+    power_delivered_l3:
+      name: "Power Consumed Phase 3"
+      accuracy_decimals: 3
+    power_returned_l1:
+      name: "Power Produced Phase 1"
+      accuracy_decimals: 3
+    power_returned_l2:
+      name: "Power Produced Phase 2"
+      accuracy_decimals: 3
+    power_returned_l3:
+      name: "Power Produced Phase 3"
+      accuracy_decimals: 3
+    gas_delivered:
+      name: "Gas Consumed"
+    gas_delivered_be:
+      name: "Gas Consumed Belgium"
+  - platform: uptime
+    name: "SlimmeLezer Uptime"
+  - platform: pulse_meter
+    pin:
+      number: ${water_meter_pin}
+      inverted: true
+      mode:
+        input: true
+    internal_filter_mode: "PULSE"
+    internal_filter: 100ms
+    id: water_meter
+    name: "Water Flow Rate"
+    unit_of_measurement: "l/min"
+    icon: "mdi:pulse"
+    timeout: 60s
+    total:
+      id: water_consumed
+      name: "Water Consumed"
+      accuracy_decimals: 3
+      unit_of_measurement: "m³"
+      icon: mdi:water
+      device_class: water
+      state_class: total_increasing
+      filters:
+        - multiply: 0.001
+        - lambda: |-
+            id(water_meter_total) = id(water_consumed).raw_state;
+            return x;
+
+text_sensor:
+  - platform: dsmr
+    identification:
+      name: "DSMR Identification"
+    p1_version:
+      name: "DSMR Version"
+    p1_version_be:
+      name: "DSMR Version Belgium"
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
