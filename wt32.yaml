@@ -160,6 +160,14 @@ sensor:
       name: "Gas Consumed"
     gas_delivered_be:
       name: "Gas Consumed Belgium"
+    active_energy_import_current_average_demand:
+      name: "Current Quarter/Hour Average Demand"
+      accuracy_decimals: 3
+    active_energy_import_maximum_demand_running_month:
+      name: "Maximum Demand Current Month"
+      accuracy_decimals: 3
+    active_energy_import_maximum_demand_last_13_months:
+      name: "Maximum Demand Last 13 Months"
   - platform: uptime
     name: "SlimmeLezer Uptime"
 
