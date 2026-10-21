@@ -67,6 +67,10 @@ uart:
 web_server:
   port: 80
 
+network:
+  enable_ipv6: true
+  min_ipv6_addr_count: 2
+
 ethernet:
   type: LAN8720
   mdc_pin: GPIO23
